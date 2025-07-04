@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #7c3aed;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.6;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .credibility-meter {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .meter-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .analysis-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #666;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-image {
+                margin-right: 0;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="gradient-bg text-white">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold">TruthGuard</h1>
+                </div>
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-6">
+                        <li><a href="#" class="hover:underline">Home</a></li>
+                        <li><a href="#" class="hover:underline">How It Works</a></li>
+                        <li><a href="#" class="hover:underline">Resources</a></li>
+                        <li><a href="#" class="hover:underline">About</a></li>
+                    </ul>
+                </nav>
+                <button class="md:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <section class="hero-content flex items-center mb-16">
+            <div class="hero-image w-1/2 mr-8">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/676b6c76-6c74-4365-ad94-5abfc5f313dc.png" alt="Digital illustration of a newspaper with truth and fake news icons floating above it" class="rounded-lg shadow-xl">
+            </div>
+            <div class="w-1/2">
+                <h1 class="text-4xl font-bold mb-4">Detect Fake News with AI Precision</h1>
+                <p class="text-lg mb-6">TruthGuard uses advanced machine learning to analyze news articles and determine their credibility. Get instant results with our state-of-the-art detection algorithms.</p>
+                <button class="btn-primary bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition duration-300 inline-flex items-center">
+                    <span>Try It Now</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center">News Analyzer</h2>
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <label for="news-input" class="block text-sm font-medium text-gray-700 mb-2">Enter news article URL or paste text</label>
+                    <textarea id="news-input" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Paste news article text or enter URL..."></textarea>
+                </div>
+                <div class="flex justify-center">
+                    <button id="analyze-btn" class="btn-primary bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-8 rounded-full transition duration-300 inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Analyze News
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div id="results" class="hidden bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6">Analysis Results</h2>
+                
+                <div class="mb-8">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-medium">Credibility Score</span>
+                        <span id="score-text" class="font-bold">85%</span>
+                    </div>
+                    <div class="credibility-meter">
+                        <div id="credibility-meter-fill" class="meter-fill bg-green-500" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="analysis-card bg-gray-50 rounded-lg p-4 border border-gray-200 transition duration-300">
+                        <h3 class="font-semibold mb-3">Language Analysis</h3>
+                        <div class="flex items-center mb-2">
+                            <span class="w-24">Emotional:</span>
+                            <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                                <div class="h-2 bg-yellow-500 rounded-full" style="width: 65%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-gray-600">65%</span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            <span class="w-24">Factual:</span>
+                            <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                                <div class="h-2 bg-green-500 rounded-full" style="width: 78%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-gray-600">78%</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-24">Clickbait:</span>
+                            <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                                <div class="h-2 bg-purple-500 rounded-full" style="width: 42%"></div>
+                            </div>
+                            <span class="ml-2 text-sm text-gray-600">42%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-card bg-gray-50 rounded-lg p-4 border border-gray-200 transition duration-300">
+                        <h3 class="font-semibold mb-3">Source Verification</h3>
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <span>Registered domain</span>
+                        </div>
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <span>Mixed bias history</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                            <span>No fact-checking record</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-semibold mb-3">Key Indicators</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <span>Quotes reliable sources</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <span>Provides references</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <span>Contains some generalizations</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                            <span>High emotional language</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-3">Analysis Summary</h3>
+                    <p id="analysis-summary" class="text-gray-700">The article shows reasonable credibility based on language analysis and source verification, but contains some emotionally charged language and generalizations. While the source has mixed bias history, the article provides references to reputable sources.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center">How TruthGuard Works</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6 transition duration-300 hover:shadow-lg">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Natural Language Processing</h3>
+                    <p class="text-gray-600">Advanced NLP techniques analyze the linguistic patterns in news articles to detect signs of misinformation.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 transition duration-300 hover:shadow-lg">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Source Verification</h3>
+                    <p class="text-gray-600">Comprehensive database checks verify the reliability and history of news sources.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 transition duration-300 hover:shadow-lg">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Machine Learning</h3>
+                    <p class="text-gray-600">Our AI continuously learns from verified news sources to improve detection accuracy over time.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center">Recent Fact-Checks</h2>
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Headline</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Study shows vaccine efficacy at 95%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Reuters</td>
+                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Verified</span></td>
+                                <td class="px-6 py-4 whitespace-nowrap">2023-05-15</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Celebrity death hoax goes viral</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Unknown Blog</td>
+                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">False</span></td>
+                                <td class="px-6 py-4 whitespace-nowrap">2023-05-10</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Climate change impacts exaggerated</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Opinion Site</td>
+                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">Misleading</span></td>
+                                <td class="px-6 py-4 whitespace-nowrap">2023-05-08</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center">Tips to Spot Fake News</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-3">1. Check the Source</h3>
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/91bab718-e2d3-40fe-a915-0c334d7bdbee.png" alt="Illustration showing verification process analyzing news sources" class="rounded-lg mb-4">
+                    <p class="text-gray-600">Investigate the website, its 'About Us' section, and contact information. Reputable news organizations provide detailed information about their editorial staff.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-3">2. Examine the Evidence</h3>
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/0ecc5067-745d-474a-b2db-d19b27eb1a30.png" alt="Digital illustration of magnifying glass analyzing document with citations" class="rounded-lg mb-4">
+                    <p class="text-gray-600">Trustworthy news stories will include multiple sources, particularly for controversial claims. Be skeptical of stories lacking direct quotes or official reports.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-3">3. Consider the Date</h3>
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/03b973b5-3953-4e8a-ae31-83bccf3ab99a.png" alt="Calendar with important dates marked in red for fact-checking" class="rounded-lg mb-4">
+                    <p class="text-gray-600">Old stories sometimes resurface and are shared as current events. Always check the publication date before sharing.</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-3">4. Watch for Emotional Language</h3>
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b911ce0f-7060-42aa-b8bb-7a4e98b8c4bd.png" alt="News article analytics highlighting emotional words in different colors" class="rounded-lg mb-4">
+                    <p class="text-gray-600">Excessive use of capital letters, dramatic language, or urgent calls to action are often signs of misleading content.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">TruthGuard</h3>
+                    <p class="text-gray-400">Advanced fake news detection powered by AI and machine learning.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">API Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Browser Extension</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Fact-Checking Organizations</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Media Literacy Guide</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Research Papers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Connect</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Twitter</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Facebook</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>© 2023 TruthGuard. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Analysis button click handler
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const newsInput = document.getElementById('news-input');
+            const resultsSection = document.getElementById('results');
+            
+            analyzeBtn.addEventListener('click', function() {
+                const text = newsInput.value.trim();
+                
+                if (text === '') {
+                    alert('Please enter some text or a URL to analyze');
+                    return;
+                }
+                
+                // Simulate analysis
+                simulateAnalysis();
+            });
+            
+            function simulateAnalysis() {
+                // Show loading state
+                analyzeBtn.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Analyzing...
+                `;
+                analyzeBtn.disabled = true;
+                
+                // Simulate API call delay
+                setTimeout(function() {
+                    // Randomize results for demo purposes
+                    const score = Math.floor(Math.random() * 30) + 50;
+                    const scoreColor = score >= 75 ? 'green' : (score >= 50 ? 'yellow' : 'red');
+                    
+                    // Update score display
+                    document.getElementById('score-text').textContent = `${score}%`;
+                    const meterFill = document.getElementById('credibility-meter-fill');
+                    meterFill.style.width = `${score}%`;
+                    meterFill.className = `meter-fill bg-${scoreColor}-500`;
+                    
+                    // Update summary based on score
+                    let summary = '';
+                    if (score >= 75) {
+                        summary = 'This article shows high credibility with mostly factual language and reliable sources. The content appears trustworthy based on our analysis.';
+                    } else if (score >= 50) {
+                        summary = 'The article shows reasonable credibility but contains some misleading elements or questionable sources that should be verified independently.';
+                    } else {
+                        summary = 'This article shows significant signs of misinformation based on our analysis. We recommend verifying claims through independent fact-checking sources.';
+                    }
+                    document.getElementById('analysis-summary').textContent = summary;
+                    
+                    // Show results
+                    resultsSection.classList.remove('hidden');
+                    
+                    // Reset button
+                    analyzeBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Analyze News
+                    `;
+                    analyzeBtn.disabled = false;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
+
